@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>解密日志列表</title>
+</head>
+<body>
+<script type="text/javascript">
+    Ext.Loader.setPath('Ext.ux', '/static/js/extjs/ux');
+    Ext.require('Ext.ux.LiveSearchGridPanel');
+
+    Ext.define('AuditLog', {
+        extend: 'Ext.data.Model',
+        fields: [
+            {name: 'module_id', type: 'int'},
+            {name: 'request_ip', type: 'string'},
+            {name: 'is_success', type: 'string'},
+            {name: 'create_date', type: 'string'},
+            {name: 'error_msg', type: 'string'}
+        ]
+    });
+
+    var store = Ext.create('Ext.data.Store', {
+        model: 'AuditLog',
+        proxy: {
+            type: 'ajax',
+            url: '/decrypt/get_list_data/',
+            reader: {
+                type: 'json',
+                root: 'records',
+                totalProperty: 'total'
+            }
+        },
+        frame: true,
+        stripeRows: true,
+        autoLoad: false
+    });
+
+    // 创建按钮bar组件,是上面的几个按钮。
+    var buttonBar = Ext.create('Ext.toolbar.Toolbar', {
+        dock: 'top',
+        items: [
+            {
+                xtype: 'button',
+                text: '新建',
+                iconCls: 'add',
+                handler: function () {
+                    // 自行新建操作，传入一个create字符串用来标示是什么按钮事件，传入dataPanel（注意：上面没有var
+                    // dataPanel;此处会报错。）因为后面的新建需要用到表格显示的数据（dataPanel.getSelectionModel().getSelection()）
+                    //moduleObj.proAction("create", dataPanel, workerPanel);
+                }
+            },
+            {
+                xtype: 'tbseparator'
+            },
+            {
+                xtype: 'button',
+                text: '删除',
+                iconCls: 'remove',
+                handler: function () {
+                    //moduleObj.proAction("delete", dataPanel);
+                }
+            },
+            {
+                xtype: 'tbseparator'
+            },
+            {
+                xtype: 'button',
+                text: '复制',
+                iconCls: 'copy',
+                handler: function () {
+                    //moduleObj.proAction("copy", dataPanel, workerPanel);
+                }
+            },
+            {
+                xtype: 'button',
+                text: '重置检索',
+                iconCls: 'reset',
+                handler: function () {
+                    //dataPanel.resetSearch();
+                }
+            }
+        ]
+    });
+
+    var checkboxModel = Ext.create('Ext.selection.CheckboxModel');
+
+    var gridPanel = Ext.create('Ext.ux.LiveSearchGridPanel', {
+        store: store,
+        columnLines: true,
+        selModel: checkboxModel,
+        columns: [
+            { text: '序号', xtype: 'rownumberer', width: 50, sortable: false},
+            { text: '模块ID', dataIndex: 'module_id' },
+            { text: '请求IP', dataIndex: 'request_ip' },
+            { text: '是否成功', dataIndex: 'is_success', renderer: function (value) {
+                if (value == 'true') {
+                    return "<font style='color:green'>成功</span>";
+                }
+                if (value == 'false') {
+                    return "<font style='color:red'>失败</span>";
+                }
+            } },
+            { text: '创建时间', dataIndex: 'create_date', width: 180 },
+            { text: '错误信息', dataIndex: 'error_msg' }
+        ],
+        renderTo: 'centerPanelDiv',
+        //dockedItems: [buttonBar],
+        tbar: [
+            {
+                xtype: 'textfield',
+                name: 'searchField',
+                hideLabel: true,
+                width: 200
+            },
+            {
+                xtype: 'button',
+                text: '&lt;',
+                tooltip: 'Find Previous Row'
+            }
+        ]
+        bbar: {
+            xtype: 'pagingtoolbar',
+            store: store,
+            displayInfo: true
+        }
+    });
+
+    var activeTab = tabs.getActiveTab();
+    activeTab.add(gridPanel);
+    activeTab.doLayout();
+
+    store.load({
+        params: {
+            start: 0,
+            page: 1,
+            limit: 25
+        }
+    });
+
+</script>
+<div id="centerPanelDiv"></div>
+</body>
+</html>

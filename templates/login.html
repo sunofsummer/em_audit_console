@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)http://www.getuikit.net/docs/layouts_login.html -->
+<html lang="en-gb" dir="ltr" class="uk-height-1-1 uk-notouch">
+<style type="text/css" id="604726668000"></style>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>审计平台登录</title>
+    <link rel="shortcut icon" href="http://www.getuikit.net/docs/images/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon-precomposed" href="http://www.getuikit.net/docs/images/apple-touch-icon.png">
+    <link rel="stylesheet" href="/static/css/uikit/uikit.min.css"/>
+    <link rel="stylesheet" href="/static/css/uikit/uikit.gradient.min.css"/>
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css"/>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/js/uikit/uikit.min.js"></script>
+</head>
+
+<body class="uk-height-1-1">
+<div class="uk-vertical-align uk-text-center uk-height-1-1">
+    <div class="uk-vertical-align-middle" style="width: 250px;">
+
+        <img class="uk-margin-bottom" width="140" height="120" src="/static/images/logo.png" alt="">
+
+        <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="uk-panel uk-panel-box uk-form">
+            {% csrf_token %}
+            <div class="uk-form-row">
+                <input class="uk-width-1-1 uk-form-large" name="username" type="text" placeholder="用户名">
+            </div>
+
+            <div class="uk-form-password">
+                <input class="uk-width-1-1 uk-form-large" name="password" type="password" placeholder="密码">
+            </div>
+            <div class="uk-form-row">
+                <a class="uk-width-1-1 uk-button uk-button-primary uk-button-large"
+                   onclick="javascript:document.forms[0].submit();">登录</a>
+            </div>
+            <div class="uk-form-row uk-text-small">
+                <label class="uk-float-left"><input type="checkbox"> 记住我?</label>
+                <a class="uk-float-right uk-link uk-link-muted" href="http://www.getuikit.net/docs/layouts_login.html#">忘记密码?</a>
+            </div>
+        </form>
+
+        {% if form.errors %}
+            <div class="uk-alert uk-alert-danger">用户名密码不匹配. 请重新输入.</div>
+        {% endif %}
+
+        {% if next %}
+            {% if user.is_authenticated %}
+                <div class="uk-alert uk-alert-danger">你的账户无权访问此页面.
+                </div>
+            {% else %}
+                <div class="uk-alert uk-alert-danger">请输入用户名密码登录.</div>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var submit = function () {
+        document.forms[0].submit();
+    }
+</script>
+
+</body>
+</html>
