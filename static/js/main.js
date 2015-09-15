@@ -180,32 +180,6 @@ Ext.onReady(function () {
                 autoScroll: false,
                 layout: 'fit',
                 items: [ tabs ]
-            },
-            {
-                region: 'east',
-                collapsible: true,
-                floatable: true,
-                split: true,
-                width: 200,
-                minWidth: 120,
-                minHeight: 140,
-                title: 'East',
-                layout: {
-                    type: 'vbox',
-                    padding: 5,
-                    align: 'stretch'
-                },
-                items: [
-                    {
-                        xtype: 'textfield',
-                        labelWidth: 70,
-                        fieldLabel: 'Text field'
-                    },
-                    {
-                        xtype: 'component',
-                        html: 'I am floatable'
-                    }
-                ]
             }
         ]
     });
