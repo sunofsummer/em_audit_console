@@ -117,7 +117,7 @@ class DjangoJSONEncoder(json.JSONEncoder):
                 # '2015-08-24T17:40:04.210 000+00:00'
                 r = r[:23].replace('T', ' ')
             if r.endswith('+00:00'):
-                r = r[:-6]
+                r = r[:-6].replace('T', ' ')
             return r
         elif isinstance(o, datetime.date):
             return o.isoformat()

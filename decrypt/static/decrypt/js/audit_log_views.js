@@ -1,6 +1,7 @@
 /**
  * Created by yang.xia on 2015/9/9.
  */
+
 Ext.define('AuditLog', {
     extend: 'Ext.data.Model',
     fields: [
@@ -16,7 +17,7 @@ var store = Ext.create('Ext.data.Store', {
     model: 'AuditLog',
     proxy: {
         type: 'ajax',
-        url: '/decrypt/get_list_data/',
+        url: '/decrypt/get_audit_log_list_data/',
         reader: {
             type: 'json',
             root: 'records',
@@ -81,6 +82,14 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
     }
 });
 
+var combo = Ext.create('Ext.data.Store', {
+    fields: ['key', 'value'],
+    data: [
+        {"key": "是", "value": "1"},
+        {"key": "否", "value": "0"}
+    ]
+});
+
 var searchPanel = Ext.create('Ext.form.FormPanel', {
     region: "north",
     layout: {
@@ -95,38 +104,41 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
     height: 40,
     items: [
         {
-            xtype: "datefield",
-            fieldLabel: "开始时间",
-            name: "Q_startTime_D_GT",
-            format: "Y-m-d H:i:s",
+            xtype: "textfield",
+            fieldLabel: "模块ID",
+            name: "module_id",
             labelWidth: 80,
             labelStyle: 'padding-left:10px',
             width: 220
         },
         {
             xtype: "textfield",
-            name: "Q_subject_S_LK",
-            fieldLabel: "标题",
+            name: "request_ip__startswith",
+            fieldLabel: "请求IP",
             labelWidth: 60,
             labelStyle: 'padding-left:20px',
             width: 220
         },
         {
             xtype: "datefield",
-            fieldLabel: "结束时间",
-            name: "Q_endTime_D_LT",
+            fieldLabel: "创建时间",
+            name: "create_date",
             format: "Y-m-d H:i:s",
             labelWidth: 80,
             labelStyle: 'padding-left:10px',
             width: 220
         },
         {
-            xtype: "textfield",
-            name: "Q_location_S_LK",
-            fieldLabel: "地点",
+            xtype: "combobox",
+            name: "is_success",
+            store: combo,
+            queryMode: 'local',
+            displayField: 'key',
+            valueField: 'value',
+            fieldLabel: "成功否",
             labelWidth: 60,
             labelStyle: 'padding-left:20px',
-            width: 220
+            width: 150
         },
         {
             xtype: "button",
@@ -155,14 +167,32 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
  * 提交查询条件.
  */
 var submitSearchForm = function () {
-    var fields = this.searchPanel.getForm().getFields();
-    var fieldsValue = this.searchPanel.getForm().getFieldValues();
-    //var el = Ext.Ajax.serializeForm(this.searchPanel.getForm());
+    var values = this.searchPanel.getForm().getValues();
+    var baseParams = Ext.encode(values);
+    store.load({
+        params: {
+            baseParams: baseParams,
+            start: 0,
+            page: 1,
+            limit: 25
+        }
+    });
 };
 
+/**
+ * 重置查询条件.
+ */
 var resetSearchForm = function () {
-
+    this.searchPanel.getForm().reset();
 };
+
+/**
+ * 翻页查询时带上条件.
+ */
+store.on('beforeload', function () {
+    var values = searchPanel.getForm().getValues();
+    this.baseParams = Ext.encode(values);
+});
 
 var auditLogPanel = Ext.create('Ext.panel.Panel', {
     layout: "border",

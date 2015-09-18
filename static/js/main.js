@@ -34,7 +34,7 @@ Ext.onReady(function () {
             expanded: true,
             children: [
                 { text: "加解密", expanded: true, children: [
-                    { id: "AuditLog", text: "解密日志审计", leaf: true, url: '/decrypt/forward_list_view/' },
+                    { id: "AuditLog", text: "解密日志审计", leaf: true, url: '/decrypt/forward_audit_log_list_view/' },
                     { id: "AuditPriv", text: "开权限", leaf: true, url: '/decrypt/limit/'}
                 ] }
             ]
