@@ -5,6 +5,7 @@
 Ext.define('AuditLog', {
     extend: 'Ext.data.Model',
     fields: [
+        {name: 'pk', type: 'int'},
         {name: 'module_id', type: 'int'},
         {name: 'request_ip', type: 'string'},
         {name: 'is_success', type: 'string'},
@@ -35,17 +36,45 @@ var buttonBar = Ext.create('Ext.toolbar.Toolbar', {
     items: [
         {
             xtype: 'button',
-            text: '新建',
-            iconCls: 'Add',
-            handler: function () {
-            }
-        },
-        '-',
-        {
-            xtype: 'button',
             text: '删除',
             iconCls: 'Delete',
             handler: function () {
+                var selected = gridPanel.getSelectionModel().getSelection();
+                if (Ext.isEmpty(selected)) {
+                    Ext.MessageBox.show({
+                        title: '提示信息',
+                        msg: '请选择要删除的数据',
+                        buttons: Ext.MessageBox.YES,
+                        icon: Ext.MessageBox.WARNING
+                    });
+                    return;
+                }
+
+                Ext.MessageBox.confirm('请确认', '确定要删除选中的数据吗?', function (btn, text) {
+                    if (btn == 'yes') {
+                        var pks = [];
+                        Ext.each(selected, function (row, index, array) {
+                            Ext.iterate(row.data, function (key, value, myself) {
+                                if (key == 'pk')
+                                    pks += ',' + value;
+                            });
+                        });
+                        Ext.Ajax.request({
+                            url: '/decrypt/del_audit_log_data/?pks=' + pks.substring(1, pks.length),
+                            success: function (response, opts) {
+                                refreshGridPanel();
+                            },
+                            failure: function (response, opts) {
+                                Ext.MessageBox.show({
+                                    title: '错误信息',
+                                    msg: '删除数据失败',
+                                    buttons: Ext.MessageBox.YES,
+                                    icon: Ext.MessageBox.ERROR
+                                });
+                            }
+                        });
+                    }
+                });
             }
         }
     ]
@@ -60,6 +89,7 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
     selModel: checkboxModel,
     columns: [
         { text: '序号', xtype: 'rownumberer', width: 50, sortable: false},
+        { text: '主键', dataIndex: 'pk' },
         { text: '模块ID', dataIndex: 'module_id' },
         { text: '请求IP', dataIndex: 'request_ip' },
         { text: '是否成功', dataIndex: 'is_success', renderer: function (value) {
@@ -146,7 +176,7 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
             iconCls: "Zoom",
             scope: this,
             handler: function () {
-                submitSearchForm();
+                refreshGridPanel();
             },
             width: 60
         },
@@ -156,7 +186,7 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
             iconCls: "Arrowrotateanticlockwise",
             scope: this,
             handler: function () {
-                resetSearchForm();
+                searchPanel.getForm().reset();
             },
             width: 60
         }
@@ -166,7 +196,7 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
 /**
  * 提交查询条件.
  */
-var submitSearchForm = function () {
+var refreshGridPanel = function () {
     var values = this.searchPanel.getForm().getValues();
     var baseParams = Ext.encode(values);
     store.load({
@@ -177,14 +207,8 @@ var submitSearchForm = function () {
             limit: 25
         }
     });
-};
 
-/**
- * 重置查询条件.
- */
-var resetSearchForm = function () {
-    this.searchPanel.getForm().reset();
-};
+}
 
 /**
  * 翻页查询时带上条件.

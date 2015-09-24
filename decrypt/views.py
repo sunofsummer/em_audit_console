@@ -38,52 +38,90 @@ Usage ::
 Author :: yang.xia
 
 """
-# import logging
-# from django.db.models import Q
-#
-# from django.http import HttpResponse
-# from django.shortcuts import render
-# from .models import Audit
-# from django.core import serializers
-# from django.core.paginator import Paginator
-# import json
-#
-#
-# logger = logging.getLogger()
-#
-#
-# def forward_audit_log_list_view(request):
-#     return render(request, 'decrypt/audit_logs.html')
-#
-#
-# def get_audit_log_list_data(request):
-#     try:
-#         has_condition = request.GET.has_key('baseParams')
-#         if has_condition:
-#             base_params = json.loads(request.GET["baseParams"])
-#             q = Q()
-#             for field_name in base_params:
-#                 if base_params[field_name] != '':
-#                     q.add(Q(**{field_name: base_params[field_name]}), Q.AND)
-#
-#             audits = Audit.objects.using('decrypt').filter(q)
-#         else:
-#             audits = Audit.objects.using('decrypt').all()
-#
-#         paginator = Paginator(audits, request.GET["limit"])
-#
-#         result = serializers.serialize("gp", paginator.page(request.GET["page"]), total=audits.count())
-#     except Exception as e:
-#         print str.join('StackTrace:', e)
-#
-#     return HttpResponse(result, content_type="application/json")
+import logging
+from django.db.models import Q
+
+from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Audit, Limit
+from django.core import serializers
+from django.core.paginator import Paginator
+import json
 
 
-if __name__ == '__main__':
-    import datetime
+logger = logging.getLogger()
+q = Q()
+result = ''
 
-    timeStamp = 1381419600
-    dateArray = datetime.datetime.utcfromtimestamp(timeStamp)
-    print dateArray
-    otherStyleTime = dateArray.strftime("%Y-%m-%d %H:%M:%S")
-    print otherStyleTime
+
+def forward_audit_log_list_view(request):
+    return render(request, 'decrypt/audit_logs.html')
+
+
+def get_audit_log_list_data(request):
+    """
+    :param request:
+    :return:审计日志结果列表数据
+    """
+    try:
+        global q, result
+        q = build_q(request)
+        audits = Audit.objects.using('decrypt').filter(q)
+
+        paginator = Paginator(audits, request.GET["limit"])
+
+        result = serializers.serialize("gp", paginator.page(request.GET["page"]), total=audits.count())
+    except Exception as e:
+        print str.join('StackTrace:', e)
+
+    return HttpResponse(result, content_type="application/json")
+
+
+def del_audit_log_data(request):
+    pks = request.GET["pks"]
+    Audit.objects.using('decrypt').extra(where=['id IN (' + pks + ')']).delete()
+    return HttpResponse('{msg : "删除解密日志数据成功"}', content_type="application/json")
+
+
+def white_list_view(request):
+    return render(request, 'decrypt/white_list.html')
+
+
+def get_white_list_data(request):
+    try:
+        global q, result
+        q = build_q(request)
+        limits = Limit.objects.using('decrypt').filter(q)
+
+        paginator = Paginator(limits, request.GET["limit"])
+
+        result = serializers.serialize("gp", paginator.page(request.GET["page"]), total=limits.count())
+    except Exception as e:
+        print str.join('StackTrace:', e)
+
+    return HttpResponse(result, content_type="application/json")
+
+
+def del_white_list_data(request):
+    pks = request.GET["pks"]
+    Limit.objects.using('decrypt').extra(where=['id IN (' + pks + ')']).delete()
+    return HttpResponse('{msg : "删除白名单数据成功"}', content_type="application/json")
+
+
+def save_or_update_white_list_data(request):
+    params = json.loads(request._body)
+    Limit.objects.using('decrypt').create(bind_ip=params.get('bind_ip'), memo=params.get('memo'))
+    return HttpResponse('{msg : "保存白名单数据成功"}', content_type="application/json")
+
+
+def build_q(request):
+    global q
+    has_condition = request.GET.has_key('baseParams')
+    if has_condition:
+        base_params = json.loads(request.GET["baseParams"])
+        q = Q()
+        for field_name in base_params:
+            if base_params[field_name] != '':
+                q.add(Q(**{field_name: base_params[field_name]}), Q.AND)
+
+    return q

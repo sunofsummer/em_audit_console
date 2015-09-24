@@ -17,3 +17,9 @@ class Audit(models.Model):
     is_success = models.CharField(max_length=1)
     create_date = models.DateTimeField()
     error_msg = models.TextField()
+
+
+class Limit(models.Model):
+    id = models.AutoField(primary_key=True)
+    bind_ip = models.CharField(max_length=100)
+    memo = models.CharField(max_length=500)

@@ -14,7 +14,7 @@ Ext.onReady(function () {
 
     /*
      * 配合django crsf验证.
-     * */
+     */
     Ext.Ajax.on('beforerequest', function (conn, options) {
         if (!(/^http:.*/.test(options.url) || /^https:.*/.test(options.url))) {
 
@@ -35,7 +35,7 @@ Ext.onReady(function () {
             children: [
                 { text: "加解密", expanded: true, children: [
                     { id: "AuditLog", text: "解密日志审计", leaf: true, url: '/decrypt/forward_audit_log_list_view/' },
-                    { id: "AuditPriv", text: "开权限", leaf: true, url: '/decrypt/limit/'}
+                    { id: "AuditPriv", text: "白名单", leaf: true, url: '/decrypt/white_list_view/'}
                 ] }
             ]
         }

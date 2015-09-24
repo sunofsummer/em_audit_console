@@ -28,6 +28,7 @@ from django.core.serializers.base import DeserializationError
 from django.core.serializers.python import Serializer as PythonSerializer
 from django.core.serializers.python import Deserializer as PythonDeserializer
 from django.utils import six
+from django.utils.encoding import smart_text
 from django.utils.timezone import is_aware
 
 
@@ -77,6 +78,10 @@ class Serializer(PythonSerializer):
                 self.stream.write(" ")
         if indent:
             self.stream.write("\n")
+
+        if not self.use_natural_primary_keys or not hasattr(obj, 'natural_key'):
+            self._current["pk"] = smart_text(obj._get_pk_val(), strings_only=True)
+
         json.dump(self.get_dump_object(obj), self.stream, cls=DjangoJSONEncoder, **self.json_kwargs)
         self._current = None
 
