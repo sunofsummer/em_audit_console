@@ -145,7 +145,7 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
             xtype: "textfield",
             name: "request_ip__startswith",
             fieldLabel: "请求IP",
-            labelWidth: 60,
+            labelWidth: 80,
             labelStyle: 'padding-left:20px',
             width: 220
         },
@@ -166,7 +166,7 @@ var searchPanel = Ext.create('Ext.form.FormPanel', {
             displayField: 'key',
             valueField: 'value',
             fieldLabel: "成功否",
-            labelWidth: 60,
+            labelWidth: 80,
             labelStyle: 'padding-left:20px',
             width: 150
         },

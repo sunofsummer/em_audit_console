@@ -39,17 +39,19 @@ Author :: yang.xia
 
 """
 import logging
-from django.db.models import Q
-
-from django.http import HttpResponse
-from django.shortcuts import render
-from .models import Audit, Limit
-from django.core import serializers
-from django.core.paginator import Paginator
 import json
 
+from django.db.models import Q
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.core import serializers
+from django.core.paginator import Paginator
+from django.contrib.auth.decorators import permission_required
 
-logger = logging.getLogger()
+from .models import Audit, Limit
+
+
+log = logging.getLogger()
 q = Q()
 result = ''
 
@@ -58,6 +60,7 @@ def forward_audit_log_list_view(request):
     return render(request, 'decrypt/audit_logs.html')
 
 
+@permission_required('decrypt.can_vote')
 def get_audit_log_list_data(request):
     """
     :param request:
@@ -83,7 +86,7 @@ def del_audit_log_data(request):
     return HttpResponse('{msg : "删除解密日志数据成功"}', content_type="application/json")
 
 
-def white_list_view(request):
+def forward_white_list_view(request):
     return render(request, 'decrypt/white_list.html')
 
 

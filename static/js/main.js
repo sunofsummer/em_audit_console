@@ -35,7 +35,7 @@ Ext.onReady(function () {
             children: [
                 { text: "加解密", expanded: true, children: [
                     { id: "AuditLog", text: "解密日志审计", leaf: true, url: '/decrypt/forward_audit_log_list_view/' },
-                    { id: "AuditPriv", text: "白名单", leaf: true, url: '/decrypt/white_list_view/'}
+                    { id: "AuditPriv", text: "白名单", leaf: true, url: '/decrypt/forward_white_list_view/'}
                 ] }
             ]
         }
@@ -168,7 +168,7 @@ Ext.onReady(function () {
                 border: false,
                 split: true,
                 minHeight: 60,
-                itemCls : 'app-header',
+                itemCls: 'app-header',
                 html: '<img src="/static/images/logo.png"/>'
             },
             wr,

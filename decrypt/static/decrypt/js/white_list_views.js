@@ -43,7 +43,7 @@ var whiteListButtonBar = Ext.create('Ext.toolbar.Toolbar', {
         {
             xtype: 'button',
             text: '更新',
-            iconCls: 'Update',
+            iconCls: 'Edit',
             handler: function () {
                 var selected = whiteListGridPanel.getSelectionModel().getSelection();
                 if (selected.length > 1) {
@@ -246,7 +246,7 @@ function wlFormPanelWindowBuild() {
                 id: 'bind_ip',
                 name: 'bind_ip',
                 anchor: '70%',
-                maxLength: 100,
+                maxLength: 140,
                 allowBlank: false
             },
             {
@@ -254,7 +254,7 @@ function wlFormPanelWindowBuild() {
                 id: 'memo',
                 name: 'memo',
                 anchor: '70% -' + remainingHeight,
-                maxLength: 100,
+                maxLength: 140,
                 allowBlank: false
             }
         ]
@@ -262,7 +262,7 @@ function wlFormPanelWindowBuild() {
     wlFormPanelWindow = new Ext.Window({
         layout: 'fit',
         width: 400,
-        height: 150,
+        height: 180,
         resizable: false,
         draggable: true,
         closeAction: 'close',
@@ -322,5 +322,4 @@ function clearForm(pForm) {
         element.setValue('');
         element.reset(); // 避免出现红色波浪线
     }
-    ;
 }
