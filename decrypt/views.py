@@ -156,7 +156,7 @@ def del_prt_dict_data(request):
 def save_or_update_prt_dict_data(request):
     try:
         params = json.loads(request._body)
-        if params.get('pk') is not None:
+        if params.get('pk') is not None and params.get('pk') <> '':
             prt_dict = PrtDict.objects.using('decrypt').get(pk=params.get('pk'))
             prt_dict.product_name = params.get('product_name')
             prt_dict.module_name = params.get('module_name')

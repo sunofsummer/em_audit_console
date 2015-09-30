@@ -57,7 +57,7 @@ ROOT_URLCONF = 'em_audit_console.urls'
 # 'DIRS': [os.path.join(BASE_DIR, 'templates')],
 # 'APP_DIRS': True,
 # 'OPTIONS': {
-#             'context_processors': [
+# 'context_processors': [
 #                 'django.template.context_processors.debug',
 #                 'django.template.context_processors.request',
 #                 'django.contrib.auth.context_processors.auth',
@@ -134,3 +134,5 @@ STATICFILES_DIRS = (
 SERIALIZATION_MODULES = {
     "gp": "decrypt.gp_serializer"
 }
+
+USE_TZ = False

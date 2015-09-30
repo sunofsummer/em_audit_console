@@ -156,7 +156,7 @@ var PrtDictSearchPanel = Ext.create('Ext.form.FormPanel', {
         {
             xtype: "textfield",
             fieldLabel: "模块名称",
-            name: "module_name",
+            name: "module_name__startswith",
             labelWidth: 80,
             labelStyle: 'padding-left:20px',
             width: 220
