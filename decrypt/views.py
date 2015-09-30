@@ -49,7 +49,6 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import permission_required
 
 from .models import Audit, Limit, PrtDict
-from datetime import datetime
 
 
 log = logging.getLogger()
