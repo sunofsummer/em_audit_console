@@ -35,7 +35,8 @@ Ext.onReady(function () {
             children: [
                 { text: "加解密", expanded: true, children: [
                     { id: "AuditLog", text: "解密日志审计", leaf: true, url: '/decrypt/forward_audit_log_list_view/' },
-                    { id: "AuditPriv", text: "白名单", leaf: true, url: '/decrypt/forward_white_list_view/'}
+                    { id: "AuditPriv", text: "白名单", leaf: true, url: '/decrypt/forward_white_list_view/'},
+                    { id: "AuditPrtDict", text: "产品模块字典", leaf: true, url: '/decrypt/forward_prt_dict_view/'}
                 ] }
             ]
         }

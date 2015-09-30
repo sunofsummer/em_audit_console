@@ -9,4 +9,8 @@ urlpatterns = [
     url(r'^get_white_list_data/$', views.get_white_list_data),
     url(r'^del_white_list_data/$', views.del_white_list_data),
     url(r'^save_or_update_white_list_data/$', views.save_or_update_white_list_data),
+    url(r'^forward_prt_dict_view/$', views.forward_prt_dict_view),
+    url(r'^get_prt_dict_data/$', views.get_prt_dict_data),
+    url(r'^del_prt_dict_data/$', views.del_prt_dict_data),
+    url(r'^save_or_update_prt_dict_data/$', views.save_or_update_prt_dict_data),
 ]

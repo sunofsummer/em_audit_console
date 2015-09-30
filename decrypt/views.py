@@ -48,7 +48,8 @@ from django.core import serializers
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import permission_required
 
-from .models import Audit, Limit
+from .models import Audit, Limit, PrtDict
+from datetime import datetime
 
 
 log = logging.getLogger()
@@ -123,6 +124,48 @@ def save_or_update_white_list_data(request):
             Limit.objects.using('decrypt').create(bind_ip=params.get('bind_ip'), memo=params.get('memo'))
     except Exception, e:
         print e
+
+    return HttpResponse('{msg : "保存白名单数据成功"}', content_type="application/json")
+
+
+def forward_prt_dict_view(request):
+    return render(request, 'decrypt/prt_dict.html')
+
+
+def get_prt_dict_data(request):
+    try:
+        global q, result
+        q = build_q(request)
+        prt_dicts = PrtDict.objects.using('decrypt').filter(q)
+
+        paginator = Paginator(prt_dicts, request.GET["limit"])
+
+        result = serializers.serialize("gp", paginator.page(request.GET["page"]), total=prt_dicts.count())
+    except Exception as e:
+        print str.join('StackTrace:', e)
+
+    return HttpResponse(result, content_type="application/json")
+
+
+def del_prt_dict_data(request):
+    pks = request.GET["pks"]
+    PrtDict.objects.using('decrypt').extra(where=['module_id IN (' + pks + ')']).delete()
+    return HttpResponse('{msg : "删除产品字典数据成功"}', content_type="application/json")
+
+
+def save_or_update_prt_dict_data(request):
+    try:
+        params = json.loads(request._body)
+        if params.get('pk') is not None:
+            prt_dict = PrtDict.objects.using('decrypt').get(pk=params.get('pk'))
+            prt_dict.product_name = params.get('product_name')
+            prt_dict.module_name = params.get('module_name')
+            prt_dict.save()
+        else:
+            PrtDict.objects.using('decrypt').create(product_name=params.get('product_name'),
+                                                    module_name=params.get('module_name'))
+    except Exception, e:
+        print e.message
 
     return HttpResponse('{msg : "保存白名单数据成功"}', content_type="application/json")
 
