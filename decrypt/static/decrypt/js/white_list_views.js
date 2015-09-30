@@ -46,6 +46,7 @@ var whiteListButtonBar = Ext.create('Ext.toolbar.Toolbar', {
             iconCls: 'Edit',
             handler: function () {
                 var selected = whiteListGridPanel.getSelectionModel().getSelection();
+                if (selected.length == 0) return;
                 if (selected.length > 1) {
                     Ext.MessageBox.show({
                         title: '提示信息',
@@ -56,6 +57,7 @@ var whiteListButtonBar = Ext.create('Ext.toolbar.Toolbar', {
                     return;
                 }
                 wlFormPanelWindowBuild();
+                wlFormPanel.getForm().loadRecord(selected[0]);
             }
         },
         '-',
@@ -242,6 +244,15 @@ function wlFormPanelWindowBuild() {
         bodyPadding: wlPadding,
         items: [
             {
+                fieldLabel: '主键',
+                id: 'pk',
+                name: 'pk',
+                hidden: true,
+                anchor: '70%',
+                maxLength: 140,
+                allowBlank: false
+            },
+            {
                 fieldLabel: '绑定IP',
                 id: 'bind_ip',
                 name: 'bind_ip',
@@ -290,8 +301,9 @@ function wlFormPanelWindowBuild() {
                         Ext.Ajax.request({
                             url: '/decrypt/save_or_update_white_list_data/',
                             success: function (response, opts) {
-                                clearForm(wlFormPanelWindow.getComponent('ccwfForm').form);
+                                wlFormPanelWindow.getComponent('wlForm').getForm().reset();
                                 wlFormPanelWindow.close();
+                                refreshWhiteListSearchPanel();
                             },
                             failure: function (response, opts) {
                             },
@@ -310,16 +322,4 @@ function wlFormPanelWindowBuild() {
         ]
     });
     wlFormPanelWindow.show();
-}
-
-/**
- * 清除Ext.Form表单元素
- */
-function clearForm(pForm) {
-    var formItems = pForm.items['items'];
-    for (i = 0; i < formItems.length; i++) {
-        element = formItems[i];
-        element.setValue('');
-        element.reset(); // 避免出现红色波浪线
-    }
 }

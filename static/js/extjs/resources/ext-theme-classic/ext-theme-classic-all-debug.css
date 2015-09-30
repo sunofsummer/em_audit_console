@@ -19525,3 +19525,20 @@ body.x-nbr .x-tab-default-right-frameInfo {
 .x-tab-noicon .x-tab-icon {
   display: none;
 }
+#app-header {
+	background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#f3f6fc),color-stop(100%,#cbdaf0));
+	background-image: -webkit-linear-gradient(top,#f3f6fc,#cbdaf0);
+	background-image: -moz-linear-gradient(top,#f3f6fc,#cbdaf0);
+	background-image: -o-linear-gradient(top,#f3f6fc,#cbdaf0);
+	background-image: linear-gradient(top,#f3f6fc,#cbdaf0);
+	border-bottom: 1px solid #a3bde5
+}
+
+#app-header-title {
+	padding: 15px 10px 10px 31px;
+	background: url(images/logo.png) no-repeat 10px 11px;
+	color: #04408c;
+	font-size: 18px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 gray
+}

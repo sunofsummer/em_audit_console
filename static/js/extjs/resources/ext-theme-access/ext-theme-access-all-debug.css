@@ -19214,3 +19214,20 @@ body.x-nbr .x-tab-default-right-frameInfo {
 .x-tab-noicon .x-tab-icon {
   display: none;
 }
+#app-header {
+	background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(0%,#4a5366),color-stop(100%,#343b48));
+	background-image: -webkit-linear-gradient(top,#4a5366,#343b48);
+	background-image: -moz-linear-gradient(top,#4a5366,#343b48);
+	background-image: -o-linear-gradient(top,#4a5366,#343b48);
+	background-image: linear-gradient(top,#4a5366,#343b48);
+	border-bottom: 1px solid #1f232b
+}
+
+#app-header-title {
+	padding: 15px 10px 10px 31px;
+	background: url(images/logo.png) no-repeat 10px 11px;
+	color: white;
+	font-size: 18px;
+	font-weight: bold;
+	text-shadow: 0 1px 0 gray
+}

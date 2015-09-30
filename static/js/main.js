@@ -163,13 +163,13 @@ Ext.onReady(function () {
         },
         items: [
             {
+                id: "app-header",
                 region: 'north',
                 frame: false,
                 border: false,
                 split: true,
-                minHeight: 60,
-                itemCls: 'app-header',
-                html: '<img src="/static/images/logo.png"/>'
+                minHeight: 52,
+                html: '<div id="app-header" style="height:100%"><div id="app-header-title" style="right: auto; left: 0px; margin: 0px; width: 1918px; top: 2px;">益盟安全审计控制台</div></div>'
             },
             wr,
             {

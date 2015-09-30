@@ -112,8 +112,18 @@ def del_white_list_data(request):
 
 
 def save_or_update_white_list_data(request):
-    params = json.loads(request._body)
-    Limit.objects.using('decrypt').create(bind_ip=params.get('bind_ip'), memo=params.get('memo'))
+    try:
+        params = json.loads(request._body)
+        if params.get('pk') is not None:
+            limit = Limit.objects.using('decrypt').get(pk=params.get('pk'))
+            limit.bind_ip = params.get('bind_ip')
+            limit.memo = params.get('memo')
+            limit.save()
+        else:
+            Limit.objects.using('decrypt').create(bind_ip=params.get('bind_ip'), memo=params.get('memo'))
+    except Exception, e:
+        print e
+
     return HttpResponse('{msg : "保存白名单数据成功"}', content_type="application/json")
 
 
