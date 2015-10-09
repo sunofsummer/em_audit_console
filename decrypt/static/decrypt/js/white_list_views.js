@@ -248,6 +248,7 @@ function wlFormPanelWindowBuild() {
                 id: 'pk',
                 name: 'pk',
                 hidden: true,
+                hideMode: 'display',
                 anchor: '70%',
                 maxLength: 140,
                 allowBlank: false

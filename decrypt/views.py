@@ -46,12 +46,12 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.core import serializers
 from django.core.paginator import Paginator
-from django.contrib.auth.decorators import permission_required
+from datetime import datetime
 
 from .models import Audit, Limit, PrtDict
 
 
-log = logging.getLogger()
+log = logging.getLogger('em_audit_console.decrypt')
 q = Q()
 result = ''
 
@@ -60,7 +60,6 @@ def forward_audit_log_list_view(request):
     return render(request, 'decrypt/audit_logs.html')
 
 
-@permission_required('decrypt.can_vote')
 def get_audit_log_list_data(request):
     """
     :param request:
@@ -74,8 +73,8 @@ def get_audit_log_list_data(request):
         paginator = Paginator(audits, request.GET["limit"])
 
         result = serializers.serialize("gp", paginator.page(request.GET["page"]), total=audits.count())
-    except Exception as e:
-        print str.join('StackTrace:', e)
+    except Exception, e:
+        print e.message, e.args
 
     return HttpResponse(result, content_type="application/json")
 
@@ -113,7 +112,7 @@ def del_white_list_data(request):
 
 def save_or_update_white_list_data(request):
     try:
-        params = json.loads(request._body)
+        params = json.loads(request.body)
         if params.get('pk') is not None:
             limit = Limit.objects.using('decrypt').get(pk=params.get('pk'))
             limit.bind_ip = params.get('bind_ip')
@@ -154,11 +153,13 @@ def del_prt_dict_data(request):
 
 def save_or_update_prt_dict_data(request):
     try:
-        params = json.loads(request._body)
-        if params.get('pk') is not None and params.get('pk') <> '':
+        params = json.loads(request.body)
+        if params.get('pk') is not None and params.get('pk') != '':
             prt_dict = PrtDict.objects.using('decrypt').get(pk=params.get('pk'))
             prt_dict.product_name = params.get('product_name')
             prt_dict.module_name = params.get('module_name')
+            prt_dict.create_date = prt_dict.create_date.strftime('%Y-%m-%d %H:%M:%S')
+            prt_dict.modify_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             prt_dict.save()
         else:
             PrtDict.objects.using('decrypt').create(product_name=params.get('product_name'),
@@ -171,8 +172,7 @@ def save_or_update_prt_dict_data(request):
 
 def build_q(request):
     global q
-    has_condition = request.GET.has_key('baseParams')
-    if has_condition:
+    if 'baseParams' in request.GET:
         base_params = json.loads(request.GET["baseParams"])
         q = Q()
         for field_name in base_params:

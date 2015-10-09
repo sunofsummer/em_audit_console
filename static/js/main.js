@@ -147,10 +147,10 @@ Ext.onReady(function () {
     };
 
     tabs.on('tabchange', function () {
-        if (Ext.isEmpty(this.getActiveTab().tabTip)) {
-            Ext.getCmp('mainPanel').setTitle('当前位置:&nbsp;&nbsp;主页');
+        if (Ext.isEmpty(this.getActiveTab().title)) {
+            Ext.getCmp('mainPanel').setTitle('当前位置:&nbsp;&nbsp;主页(<a style="left:auto; right : 5px" href="/accounts/logout/">退出</a>)');
         } else {
-            Ext.getCmp('mainPanel').setTitle(this.getActiveTab().tabTip);
+            Ext.getCmp('mainPanel').setTitle('当前位置:' + this.getActiveTab().title + '(<a style="left:auto; right : 5px" href="/accounts/logout/">退出</a>)');
         }
     });
 
@@ -176,7 +176,7 @@ Ext.onReady(function () {
             {
                 region: 'center',
                 id: 'mainPanel',
-                title: '当前位置:&nbsp;&nbsp;主页',
+                title: '当前位置:&nbsp;&nbsp;主页(<a style="left:auto; right : 5px" href="/accounts/logout/">退出</a>)',
                 iconCls: '',
                 autoScroll: false,
                 layout: 'fit',

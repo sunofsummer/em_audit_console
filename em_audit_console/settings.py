@@ -90,7 +90,7 @@ DATABASES = {
     'decrypt': {
         'NAME': 'EMBase_test',
         'ENGINE': 'sqlserver_ado',
-        'HOST': 'WIN-O3UVOV3QKGE\EMBASE',
+        'HOST': '192.168.3.65',
         'USER': 'sa',
         'PASSWORD': 'w,i@J$2FdzolU#g1S0"2t',
     },
